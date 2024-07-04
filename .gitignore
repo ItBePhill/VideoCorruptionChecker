@@ -1,1 +1,5 @@
 VideoCorruptionChecker.code-workspace
+.venv
+ffmpeg.exe
+ffplay.exe
+ffprobe.exe
