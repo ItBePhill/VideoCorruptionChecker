@@ -8,3 +8,4 @@ build
 app.ico
 build.py
 VideoCorruptionChecker.spec
+corrupted.txt
