@@ -4,7 +4,7 @@ import os
 import configparser
 good = []
 corrupted = []
-video_extensions = ['webm', 'mkv', 'flv', 'vob', 'ogv', 'ogg', 'rrc', 'gifv', 'mng', 'mov', 'avi', 'qt', 'wmv', 'yuv', 'rm', 'asf', 'amv', 'mp4', 'm4p', 'm4v', 'mpg', 'mp2', 'mpeg', 'mpe', 'mpv', 'm4v', 'svi', '3gp', '3g2', 'mxf', 'roq', 'nsv', 'flv', 'f4v', 'f4p', 'f4a', 'f4b', 'mod']
+video_extensions = ['webm', 'mkv', 'flv', 'vob', 'ogv', 'ogg', 'rrc', 'gifv', 'mng', 'mov', 'avi', 'qt', 'wmv', 'yuv', 'rm', 'asf', 'amv', 'mp4', 'm4p', 'm4v', 'mpg', 'mp2', 'mpeg', 'mpe', 'mpv', 'm4v', 'svi', '3gp', '3g2', 'mxf', 'roq', 'nsv', 'flv', 'f4v', 'f4p', 'f4a', 'f4b', 'mod', "corrupted"]
 def RunFFmpeg(f):
     global good, corrupted
     print(f"Checking File: {os.path.basename(f)}")
@@ -27,21 +27,24 @@ total = 0
 folder = False 
 folders = [] 
 file = ""
-ignore = [] 
 threads = 1 
 stats = []
+log = True
+rename = True
+
 
 
 folder = ast.literal_eval(config.get("files", "Folder"))
 if folder:
     folders = ast.literal_eval(config.get("files", "Folders"))
-    ignore = ast.literal_eval(config.get("files", "Ignore"))
 else:
     file = config.get("files", "File")
 
 threads =  int(config.get("sys", "Threads"))
+log =  ast.literal_eval(config.get("sys", "Log"))
+rename =  ast.literal_eval(config.get("sys", "Rename"))
 
-print(f"Folder: {folder}\nFolders: {folders}\nIgnore: {ignore}\nFile: {file}\nThreads: {threads}\n\nChecking Folder")
+print(f"Folder: {folder}\nFolders: {folders}\nFile: {file}\nThreads: {threads}\n\nChecking Folder")
 
 
 if not folder:
@@ -56,12 +59,19 @@ else:
         stats.append(f"Good: {len(good)} | Bad: {len(corrupted)} | Total: {len(good)+len(corrupted)}")
     try:
         os.remove("corrupted.txt")
+
     except Exception as e:
         print(e)
 
+
     for i in corrupted:
-        with open("corrupted.txt", "a+") as f:
-            f.write(f"{i}\n")
+        if log:
+            with open("corrupted.txt", "a+") as f:
+                f.write(f"{i}\n")
+        if rename and os.path.splitext(i)[1] != ".corrupted":
+            os.rename(i, f"{i}.corrupted")
+
+
     for i in stats:
         print(i)
 
