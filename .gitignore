@@ -3,3 +3,8 @@ VideoCorruptionChecker.code-workspace
 ffmpeg.exe
 ffplay.exe
 ffprobe.exe
+dist
+build
+app.ico
+build.py
+VideoCorruptionChecker.spec
